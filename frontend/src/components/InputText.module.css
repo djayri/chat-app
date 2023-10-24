@@ -1,0 +1,10 @@
+.container {
+  background-color: #f6f6f6;
+  /* height: 60px; */
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #e8e8e8;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
