@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { UserExistError, UserNotFoundError } = require("../utils/errors");
+
 const getUser = async (query) => {
   if (query && query.name) return await getUserByName(query.name);
 
@@ -13,10 +13,12 @@ const getUserByName = async (name) => {
 };
 
 const registerUser = async (name) => {
-  const existingUser = await getUserByName(name);
-  if (existingUser) throw new UserExistError();
-
-  const newUser = await User.create({ name });
+  const filter = { name };
+  const newUser = await User.findOneAndUpdate(
+    filter,
+    { name },
+    { new: true, upsert: true }
+  );
   return newUser;
 };
 

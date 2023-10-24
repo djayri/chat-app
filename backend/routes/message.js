@@ -12,8 +12,7 @@ router
       const result = await getAllMessages(roomId);
       res.status(200).send(result);
     } catch (error) {
-      const { status, message } = errorHandler(error);
-      res.status(status).send(message);
+      errorHandler(req, res, error);
     }
   })
   .post(async (req, res) => {
@@ -23,8 +22,7 @@ router
       const newMessage = await createMessage(roomId, userId, content);
       res.status(201).send(newMessage);
     } catch (error) {
-      const { status, message } = errorHandler(error);
-      res.status(status).send(message);
+      errorHandler(req, res, error);
     }
   });
 

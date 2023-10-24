@@ -12,8 +12,7 @@ router
       if (!user) throw new UserNotFoundError();
       res.status(200).send(user);
     } catch (error) {
-      const { status, message } = errorHandler(error);
-      res.status(status).send(message);
+      errorHandler(req, res, error);
     }
   })
   .post(async (req, res) => {
@@ -22,13 +21,8 @@ router
       const newUser = await registerUser(name);
       res.status(201).send(newUser);
     } catch (error) {
-      const { status, message } = errorHandler(error);
-      res.status(status).send(message);
+      errorHandler(req, res, error);
     }
   });
-
-// router.route('/:name').get(async(req, res => {
-
-// })
 
 module.exports = router;

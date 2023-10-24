@@ -27,12 +27,12 @@ const joinRoom = async (code, userId) => {
 };
 
 const createRoom = async (code, users) => {
-  const existingRoom = await getRoom(code);
-  if (existingRoom) return existingRoom;
-
-  console.log({ users });
-
-  const newRoom = await Room.create({ code, users });
+  const filter = { code };
+  const newRoom = await Room.findOneAndUpdate(
+    filter,
+    { code, users },
+    { new: true, upsert: true }
+  );
   return newRoom;
 };
 

@@ -11,8 +11,7 @@ router
       const rooms = await getAllRoom();
       res.status(200).send(rooms);
     } catch (error) {
-      const { status, message } = errorHandler(error);
-      res.status(status).send(message);
+      errorHandler(req, res, error);
     }
   })
   .post(async (req, res) => {
@@ -21,8 +20,7 @@ router
       const newRoom = await createRoom(code, users);
       res.status(201).send(newRoom);
     } catch (error) {
-      const { status, message } = errorHandler(error);
-      res.status(status).send(message);
+      errorHandler(req, res, error);
     }
   });
 
@@ -33,8 +31,7 @@ router.route("/join/:roomCode").put(async (req, res) => {
     const room = await joinRoom(roomCode, userId);
     res.status(200).send(room);
   } catch (error) {
-    const { status, message } = errorHandler(error);
-    res.status(status).send(message);
+    errorHandler(req, res, error);
   }
 });
 
