@@ -4,6 +4,7 @@ const messageRoutes = require("./routes/message");
 const userRoutes = require("./routes/user");
 const roomRoutes = require("./routes/room");
 const connectDB = require("./db");
+const websocket = require("./websocket");
 
 dotenv.config();
 
@@ -20,3 +21,5 @@ const PORT = process.env.PORT;
 const server = app.listen(PORT, () => {
   console.log(`Chat App server running on port:${PORT}`);
 });
+
+websocket.initSocket(server);
