@@ -12,8 +12,8 @@ const initSocket = (server) => {
   io.on("connection", (socket) => {
     socket.on("join_room", ({ roomCode, userName }) => {
       socket.join(roomCode);
-      console.log(`user ${userName} join a room`);
-      socket.to(roomCode).emit("room_connected", roomCode);
+      console.log(`user ${userName} join room ${roomCode}`);
+      socket.emit("room_connected", roomCode);
     });
 
     socket.on("new_message", (message) => {

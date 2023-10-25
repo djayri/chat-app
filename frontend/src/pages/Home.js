@@ -10,7 +10,7 @@ import Button from "../components/Button";
 import styles from "./Home.module.css";
 
 const Home = () => {
-  const { setActiveRoomId, setUserId } = useMainState();
+  const { setActiveRoomId, setUserId, setActiveRoomCode } = useMainState();
   const [username, setUsername] = useState("");
   const [roomCode, setRoomCode] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -41,6 +41,7 @@ const Home = () => {
     if (roomId && userId) {
       setActiveRoomId(roomId);
       setUserId(userId);
+      setActiveRoomCode(roomCode);
       navigate("/chat");
     }
     setIsLoading(false);

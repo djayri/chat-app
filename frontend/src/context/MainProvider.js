@@ -4,11 +4,19 @@ const MainContext = createContext();
 
 const MainProvider = ({ children }) => {
   const [activeRoomId, setActiveRoomId] = useState("");
+  const [activeRoomCode, setActiveRoomCode] = useState("");
   const [userId, setUserId] = useState("");
 
   return (
     <MainContext.Provider
-      value={{ activeRoomId, userId, setActiveRoomId, setUserId }}
+      value={{
+        activeRoomId,
+        userId,
+        activeRoomCode,
+        setActiveRoomId,
+        setUserId,
+        setActiveRoomCode,
+      }}
     >
       {children}
     </MainContext.Provider>
