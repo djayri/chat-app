@@ -54,7 +54,7 @@ const Chat = () => {
     appendPendingMessage({
       content: newMessage,
       queueId: uuidv4(),
-      sender: userId,
+      sender: { _id: userId },
     });
     setNewMessage("");
   };

@@ -36,7 +36,7 @@ const useMessages = (roomId, sender, onMessageSent) => {
     if (!message) return;
     const { data: storedMessage } = await axiosInstance.post(
       `${process.env.REACT_APP_BACKEND_URL}/messages/${roomId}`,
-      { sender: message.sender, content: message.content }
+      { sender: message.sender._id, content: message.content }
     );
     setAllMessages((current) => [...current, storedMessage]);
     return storedMessage;
