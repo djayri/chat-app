@@ -1,5 +1,10 @@
 const express = require("express");
-const { joinRoom, createRoom, getAllRoom } = require("../controller/room");
+const {
+  joinRoom,
+  createRoom,
+  getAllRoom,
+  leaveRoom,
+} = require("../controller/room");
 const { errorHandler, UserNotFoundError } = require("../utils/errors");
 
 const router = express.Router();
@@ -29,6 +34,17 @@ router.route("/:roomCode").put(async (req, res) => {
   const { roomCode } = req.params;
   try {
     const room = await joinRoom(roomCode, userId);
+    res.status(200).send(room);
+  } catch (error) {
+    errorHandler(req, res, error);
+  }
+});
+
+router.route("/leave/:roomCode").put(async (req, res) => {
+  const { userId } = req.body;
+  const { roomCode } = req.params;
+  try {
+    const room = await leaveRoom(roomCode, userId);
     res.status(200).send(room);
   } catch (error) {
     errorHandler(req, res, error);

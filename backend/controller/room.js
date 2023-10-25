@@ -26,6 +26,21 @@ const joinRoom = async (code, userId) => {
   return pushedUser;
 };
 
+const leaveRoom = async (code, userId) => {
+  if (!userId) throw new Error("user ID is required");
+
+  const existingRoom = await getRoom(code);
+  if (!existingRoom) throw new RoomNotFoundError();
+
+  const updatedRoom = Room.findByIdAndUpdate(
+    existingRoom._id,
+    { $pull: { users: userId } },
+    { new: true }
+  );
+
+  return updatedRoom;
+};
+
 const createRoom = async (code) => {
   const filter = { code };
   const newRoom = await Room.findOneAndUpdate(
@@ -41,4 +56,4 @@ const getRoom = async (code) => {
   return room;
 };
 
-module.exports = { joinRoom, createRoom, getAllRoom, getRoom };
+module.exports = { joinRoom, createRoom, getAllRoom, getRoom, leaveRoom };
