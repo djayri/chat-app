@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
 import { useMainState } from "../context/MainProvider";
 import io from "socket.io-client";
+import { v4 as uuidv4 } from "uuid";
+import useMessages from "../hooks/useMessages";
 
 const socket = io.connect("http://localhost:3001");
 
 const Chat = () => {
   const { activeRoomId, activeRoomCode, userId } = useMainState();
-  const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     if (activeRoomCode && userId) {
+      fetchAllMessages();
       updateConnectionStatus(false);
+
       socket.emit("join_room", { roomCode: activeRoomCode, userName: userId });
       socket.on("room_connected", (roomCode) => {
         updateConnectionStatus(true);
@@ -22,30 +25,45 @@ const Chat = () => {
     }
   }, [activeRoomId, userId]);
 
+  const onMessageSent = (storedMessage) => {
+    socket.emit("new_message", {
+      ...storedMessage,
+      roomCode: activeRoomCode,
+    });
+  };
+
+  const {
+    allMessages,
+    pendingMessages,
+    fetchAllMessages,
+    appendNewMessage,
+    appendPendingMessage,
+  } = useMessages(activeRoomId, userId, onMessageSent);
+
+  useEffect(() => {}, [allMessages]);
+
   const updateConnectionStatus = (isConnected) => {
     setIsConnecting(!isConnected);
     setIsConnected(isConnected);
   };
 
-  useEffect(() => {
-    socket.on("message_received", (data) => {
-      console.log(`new message received, data:${JSON.stringify(data)}`);
-      if (data.sender !== userId)
-        setMessages((current) => [...current, data.content]);
-    });
-  }, [socket]);
-
-  const sendMessage = (e) => {
+  const queueMessage = (e) => {
     if (e.key !== "Enter" || !newMessage) return;
-
-    socket.emit("new_message", {
-      roomCode: activeRoomCode,
-      sender: userId,
+    appendPendingMessage({
       content: newMessage,
+      queueId: uuidv4(),
+      sender: userId,
     });
     setNewMessage("");
   };
 
+  useEffect(() => {
+    socket.on("message_received", (data) => {
+      if (data.sender !== userId) appendNewMessage(data);
+    });
+  }, [socket]);
+
+  const combinedMessages = [...allMessages, ...pendingMessages];
   return (
     <div>
       <h1 className="section-title">{activeRoomCode}</h1>
@@ -58,11 +76,16 @@ const Chat = () => {
         id="message"
         value={newMessage}
         onChange={(e) => setNewMessage(e.target.value)}
-        onKeyDown={sendMessage}
+        onKeyDown={queueMessage}
       />
       <section>
-        {messages &&
-          messages.map((message, index) => <div key={index}>{message}</div>)}
+        {combinedMessages &&
+          combinedMessages.map((message) => (
+            <div key={message._id}>
+              <span>{message.sender.name}</span>
+              <p>{message.content}</p>
+            </div>
+          ))}
       </section>
     </div>
   );
