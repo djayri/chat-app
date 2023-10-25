@@ -19,3 +19,8 @@ input {
 ::-ms-input-placeholder {
   color: #bdbdbd;
 }
+.error-message {
+  font-size: 16px;
+  color: red;
+  font-weight: 500;
+}
