@@ -17,9 +17,9 @@ router
   })
   .post(async (req, res) => {
     const { roomId } = req.params;
-    const { userId, content } = req.body;
+    const { sender, content } = req.body;
     try {
-      const newMessage = await createMessage(roomId, userId, content);
+      const newMessage = await createMessage(roomId, sender, content);
       res.status(201).send(newMessage);
     } catch (error) {
       errorHandler(req, res, error);

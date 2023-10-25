@@ -33,8 +33,16 @@ class DuplicateUserInRoomError extends Error {
   }
 }
 
+class BadRequestError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "BadRequestError";
+  }
+}
+
 const APP_STATUS = {
   SERVER_ERROR: 1000,
+  BAD_REQUEST_ERROR: 1001,
   USER_EXIST_ERROR: 2000,
   USER_NOT_FOUND_ERROR: 2001,
   ROOM_NOT_FOUND_ERROR: 3000,
@@ -61,6 +69,9 @@ const errorHandler = (req, res, error) => {
   } else if (error instanceof DuplicateUserInRoomError) {
     (status = 400), (appStatus = APP_STATUS.ROOM_DUPLICATE_USER_ERROR);
     message = "user is already in this room";
+  } else if (error instanceof BadRequestError) {
+    (status = 404), (appStatus = APP_STATUS.BAD_REQUEST_ERROR);
+    message = "invalid payload";
   }
   return res.status(status).send({ message, appStatus });
 };
@@ -72,4 +83,5 @@ module.exports = {
   UserNotFoundError,
   RoomNotFoundError,
   DuplicateUserInRoomError,
+  BadRequestError,
 };
