@@ -26,11 +26,11 @@ const joinRoom = async (code, userId) => {
   return pushedUser;
 };
 
-const createRoom = async (code, users) => {
+const createRoom = async (code) => {
   const filter = { code };
   const newRoom = await Room.findOneAndUpdate(
     filter,
-    { code, users },
+    { code },
     { new: true, upsert: true }
   );
   return newRoom;

@@ -15,16 +15,16 @@ router
     }
   })
   .post(async (req, res) => {
-    const { code, users } = req.body;
+    const { code } = req.body;
     try {
-      const newRoom = await createRoom(code, users);
+      const newRoom = await createRoom(code);
       res.status(201).send(newRoom);
     } catch (error) {
       errorHandler(req, res, error);
     }
   });
 
-router.route("/join/:roomCode").put(async (req, res) => {
+router.route("/:roomCode").put(async (req, res) => {
   const { userId } = req.body;
   const { roomCode } = req.params;
   try {

@@ -60,7 +60,7 @@ const errorHandler = (req, res, error) => {
     message = "no room found";
   } else if (error instanceof DuplicateUserInRoomError) {
     (status = 400), (appStatus = APP_STATUS.ROOM_DUPLICATE_USER_ERROR);
-    message = "user is taken in this room";
+    message = "user is already in this room";
   }
   return res.status(status).send({ message, appStatus });
 };
