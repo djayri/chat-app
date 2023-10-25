@@ -58,6 +58,8 @@ const useMessages = (roomId, sender, onMessageSent) => {
     appendNewMessage,
     pendingMessages,
     appendPendingMessage,
+    setIsFetchingMessages,
+    setIsSendingMessage,
   };
 };
 

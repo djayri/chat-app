@@ -1,0 +1,21 @@
+.container {
+  max-width: 100%;
+  border: 1px solid #e8e8e8;
+  border-radius: 100px;
+  background-color: #f6f6f6;
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.container input {
+  height: auto;
+  width: 80%;
+  border: none;
+  background-color: #f6f6f6;
+}
+
+.container img {
+  width: 34px;
+  cursor: pointer;
+}

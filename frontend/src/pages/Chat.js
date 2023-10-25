@@ -1,9 +1,11 @@
+import styles from "./Chat.module.css";
 import { useState, useEffect } from "react";
 import { useMainState } from "../context/MainProvider";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import useMessages from "../hooks/useMessages";
-
+import InputTextWithIcon from "../components/InputTextWithIcon";
+import MessageBox from "../components/MessageBox";
 const socket = io.connect("http://localhost:3001");
 
 const Chat = () => {
@@ -23,7 +25,7 @@ const Chat = () => {
         console.log(`connected to room ${roomCode}`);
       });
     }
-  }, [activeRoomId, userId]);
+  }, [activeRoomCode, userId]);
 
   const onMessageSent = (storedMessage) => {
     socket.emit("new_message", {
@@ -48,7 +50,7 @@ const Chat = () => {
   };
 
   const queueMessage = (e) => {
-    if (e.key !== "Enter" || !newMessage) return;
+    if ((e.key && e.key !== "Enter") || !newMessage) return;
     appendPendingMessage({
       content: newMessage,
       queueId: uuidv4(),
@@ -65,28 +67,39 @@ const Chat = () => {
 
   const combinedMessages = [...allMessages, ...pendingMessages];
   return (
-    <div>
-      <h1 className="section-title">{activeRoomCode}</h1>
-      <label htmlFor="message">Message</label>
-      <section className="small-header-notification">
-        {isConnecting && <p>connecting to room...</p>}
-        {isConnected && <p>connected</p>}
-      </section>
-      <input
-        id="message"
-        value={newMessage}
-        onChange={(e) => setNewMessage(e.target.value)}
-        onKeyDown={queueMessage}
-      />
-      <section>
-        {combinedMessages &&
-          combinedMessages.map((message) => (
-            <div key={message._id}>
-              <span>{message.sender.name}</span>
-              <p>{message.content}</p>
-            </div>
-          ))}
-      </section>
+    <div className={styles.container}>
+      <div>
+        <h1 className="section-title">{activeRoomCode}</h1>
+        <section className="small-header-notification">
+          {isConnecting && <p>connecting to room...</p>}
+          {isConnected && <p>connected</p>}
+        </section>
+        <section>
+          {combinedMessages &&
+            combinedMessages.map((message) => (
+              <MessageBox
+                key={message._id || message.queueId}
+                senderName={message.sender.name}
+                senderId={message.sender._id}
+                activeUserId={userId}
+                content={message.content}
+              />
+              // <div key={message._id || message.queueId}>
+              //   <span>{message.sender.name}</span>
+              //   <p>{message.content}</p>
+              // </div>
+            ))}
+        </section>
+      </div>
+      <div className={styles.input_container}>
+        <InputTextWithIcon
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          onKeyDown={queueMessage}
+          onClick={queueMessage}
+          placeholder="Message here..."
+        />
+      </div>
     </div>
   );
 };
