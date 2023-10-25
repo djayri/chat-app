@@ -24,3 +24,10 @@ input {
   color: red;
   font-weight: 500;
 }
+
+.small-header-notification {
+  text-align: center;
+}
+.small-header-notification p {
+  margin: 0;
+}

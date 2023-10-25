@@ -1,29 +1,37 @@
 .container {
   font-size: 14px;
-  clear: both;
   padding-top: 5px;
 }
-.container > div:first-child {
-  margin-top: 10px;
+
+.container .sender {
+  padding-bottom: 5px;
 }
 
-.container.mychat {
-  float: right;
-}
-.container.mychat > div:first-child {
+.container.mychat .sender {
   display: none;
 }
-.container.mychat > div:nth-child(2) {
+
+.container.mychat .content {
   color: white;
   background-color: #5db075;
 }
 
-.container > div:nth-child(2) {
+.container .content {
   background-color: #f6f6f6;
   border: 1px solid #e8e8e8;
   padding: 15px;
   border-radius: 10px;
-  margin-top: 5px;
-  max-width: 70%;
+  /* margin-top: 5px; */
+  /* max-width: 70%; */
+}
+.container > div {
   float: left;
+  clear: both;
+  margin-top: 15px;
+}
+.container.mychat > div {
+  float: right;
+}
+.container {
+  overflow: auto;
 }

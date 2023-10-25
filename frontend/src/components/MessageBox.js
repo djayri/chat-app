@@ -4,10 +4,12 @@ const MessageBox = ({ activeUserId, senderId, senderName, content }) => {
   return (
     <div className={`${styles.container} ${style}`}>
       <div>
-        <span>{senderName}</span>
-      </div>
-      <div>
-        <span>{content}</span>
+        <div className={styles.sender}>
+          <span>{senderName}</span>
+        </div>
+        <div className={styles.content}>
+          <span>{content}</span>
+        </div>
       </div>
     </div>
   );

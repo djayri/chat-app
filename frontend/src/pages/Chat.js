@@ -1,15 +1,24 @@
 import styles from "./Chat.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMainState } from "../context/MainProvider";
 import io from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
 import useMessages from "../hooks/useMessages";
 import InputTextWithIcon from "../components/InputTextWithIcon";
 import MessageBox from "../components/MessageBox";
+import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../utils/axios";
 const socket = io.connect("http://localhost:3001");
 
 const Chat = () => {
-  const { activeRoomId, activeRoomCode, userId } = useMainState();
+  const {
+    activeRoomId,
+    activeRoomCode,
+    userId,
+    setActiveRoomId,
+    setUserId,
+    setActiveRoomCode,
+  } = useMainState();
   const [newMessage, setNewMessage] = useState("");
   const [isConnecting, setIsConnecting] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
@@ -42,7 +51,9 @@ const Chat = () => {
     appendPendingMessage,
   } = useMessages(activeRoomId, userId, onMessageSent);
 
-  useEffect(() => {}, [allMessages]);
+  useEffect(() => {
+    if (allMessages.length) scrollToBottom();
+  }, [allMessages]);
 
   const updateConnectionStatus = (isConnected) => {
     setIsConnecting(!isConnected);
@@ -56,6 +67,7 @@ const Chat = () => {
       queueId: uuidv4(),
       sender: { _id: userId },
     });
+    scrollToBottom();
     setNewMessage("");
   };
 
@@ -65,14 +77,34 @@ const Chat = () => {
     });
   }, [socket]);
 
+  const bottomRef = useRef(null);
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const combinedMessages = [...allMessages, ...pendingMessages];
+
+  const navigate = useNavigate();
+  const exit = async () => {
+    await axiosInstance.put(
+      `${process.env.REACT_APP_BACKEND_URL}/room/leave/${activeRoomCode}`,
+      { userId }
+    );
+    setActiveRoomId("");
+    setUserId("");
+    setActiveRoomCode("");
+    navigate("/");
+  };
+
   return (
     <div className={styles.container}>
       <div>
-        <h1 className="section-title">{activeRoomCode}</h1>
+        <div class={styles.header}>
+          <div onClick={exit}>Exit</div>
+          <h1 className="section-title">{activeRoomCode}</h1>
+        </div>
         <section className="small-header-notification">
           {isConnecting && <p>connecting to room...</p>}
-          {isConnected && <p>connected</p>}
         </section>
         <section>
           {combinedMessages &&
@@ -84,11 +116,8 @@ const Chat = () => {
                 activeUserId={userId}
                 content={message.content}
               />
-              // <div key={message._id || message.queueId}>
-              //   <span>{message.sender.name}</span>
-              //   <p>{message.content}</p>
-              // </div>
             ))}
+          <div id={styles.bottom_chat} ref={bottomRef}></div>
         </section>
       </div>
       <div className={styles.input_container}>
