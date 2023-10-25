@@ -99,7 +99,7 @@ const Chat = () => {
   return (
     <div className={styles.container}>
       <div>
-        <div class={styles.header}>
+        <div className={styles.header}>
           <div onClick={exit}>Exit</div>
           <h1 className="section-title">{activeRoomCode}</h1>
         </div>
